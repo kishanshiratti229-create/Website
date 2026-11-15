@@ -1,0 +1,380 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinhub4u — Security Verification Gate</title>
+    <!-- Load Tailwind CSS for responsive layout and utility classes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter & JetBrains Mono fonts for crisp modern typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        cyber: {
+                            black: '#000000',
+                            card: '#08080a',
+                            gold: '#FFD700',
+                            goldDim: '#b39700',
+                            red: '#FF1E42',
+                            redDim: '#800f21',
+                        }
+                    },
+                    borderRadius: {
+                        'pill': '32px',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Pure pitch-black base */
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Subtle radial ambient cyber glow behind the main panel */
+        .ambient-glow {
+            background: radial-gradient(circle at 50% 0%, rgba(255, 215, 0, 0.08) 0%, rgba(255, 30, 66, 0.06) 45%, rgba(0, 0, 0, 0) 75%);
+        }
+
+        /* Main container glass/cyber border & dual-tone shadow */
+        .cyber-panel {
+            background: linear-gradient(180deg, rgba(16, 16, 20, 0.92) 0%, rgba(6, 6, 8, 0.98) 100%);
+            border: 1px solid rgba(255, 215, 0, 0.22);
+            box-shadow: 
+                0 0 40px -10px rgba(255, 30, 66, 0.22),
+                0 0 25px -8px rgba(255, 215, 0, 0.18),
+                inset 0 1px 0 0 rgba(255, 215, 0, 0.25);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .cyber-panel.locked-state {
+            border-color: rgba(255, 30, 66, 0.55);
+            box-shadow: 
+                0 0 50px -8px rgba(255, 30, 66, 0.4),
+                inset 0 1px 0 0 rgba(255, 30, 66, 0.3);
+        }
+
+        .cyber-panel.verified-state {
+            border-color: rgba(255, 215, 0, 0.6);
+            box-shadow: 
+                0 0 50px -8px rgba(255, 215, 0, 0.35),
+                inset 0 1px 0 0 rgba(255, 215, 0, 0.4);
+        }
+
+        /* Pill-shaped 32px border-radius primary button with gold-to-red cyber glow */
+        .btn-cyber-primary {
+            border-radius: 32px;
+            background: linear-gradient(135deg, #FFD700 0%, #ff9d00 50%, #FF1E42 100%);
+            color: #000000;
+            font-weight: 700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3), 0 0 12px rgba(255, 30, 66, 0.25);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-cyber-primary:hover:not(:disabled) {
+            transform: translateY(-1px) scale(1.01);
+            box-shadow: 0 0 28px rgba(255, 215, 0, 0.55), 0 0 18px rgba(255, 30, 66, 0.45);
+        }
+
+        .btn-cyber-primary:active:not(:disabled) {
+            transform: translateY(0) scale(0.99);
+        }
+
+        /* Pill-shaped 32px border-radius secondary/support buttons */
+        .btn-cyber-pill {
+            border-radius: 32px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            transition: all 0.25s ease;
+        }
+
+        .btn-cyber-pill-gold:hover {
+            border-color: #FFD700;
+            background: rgba(255, 215, 0, 0.08);
+            box-shadow: 0 0 18px rgba(255, 215, 0, 0.25);
+            color: #FFD700;
+        }
+
+        .btn-cyber-pill-red:hover {
+            border-color: #FF1E42;
+            background: rgba(255, 30, 66, 0.08);
+            box-shadow: 0 0 18px rgba(255, 30, 66, 0.25);
+            color: #FF1E42;
+        }
+
+        /* Custom numeric input styling */
+        .cyber-input {
+            background: #030304;
+            border: 1px solid rgba(255, 215, 0, 0.25);
+            border-radius: 32px;
+            transition: all 0.25s ease;
+        }
+
+        .cyber-input:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.25), inset 0 0 8px rgba(255, 215, 0, 0.08);
+        }
+
+        /* Remove number input arrows */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* Shake animation for invalid attempt */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+        .animate-shake {
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        /* Subtle scanning line overlay */
+        .scanline {
+            background: linear-gradient(to bottom, transparent 50%, rgba(255, 215, 0, 0.02) 51%);
+            background-size: 100% 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen w-full flex flex-col items-center justify-center p-4 sm:p-6 relative selection:bg-cyber-gold selection:text-black">
+
+    <!-- Ambient Background Glow & Grid -->
+    <div class="fixed inset-0 ambient-glow pointer-events-none"></div>
+    <div class="fixed inset-0 scanline pointer-events-none opacity-60"></div>
+
+    <!-- Main Security Verification Panel -->
+    <main id="securityCard" class="cyber-panel relative z-10 w-full max-w-md rounded-3xl p-6 sm:p-8 backdrop-blur-xl">
+        
+        <!-- Top Status Bar -->
+        <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
+            <div class="flex items-center gap-2.5">
+                <span id="statusDot" class="w-2.5 h-2.5 rounded-full bg-cyber-gold shadow-[0_0_10px_#FFD700] animate-pulse"></span>
+                <span id="statusBadge" class="font-mono text-xs uppercase tracking-widest text-cyber-gold font-bold">
+                    Cinhub4u Security
+                </span>
+            </div>
+            <!-- Attempt Counter Pill -->
+            <div id="attemptPill" class="px-3 py-1 rounded-pill bg-white/5 border border-white/10 font-mono text-xs text-gray-300">
+                Attempts: <span id="attemptsLeftText" class="text-cyber-gold font-bold">2</span>/2
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- STATE 1: ACTIVE VERIFICATION CHALLENGE     -->
+        <!-- ========================================== -->
+        <section id="challengeView" class="space-y-6">
+            <!-- Header Icon & Title -->
+            <div class="text-center space-y-2">
+                <div class="mx-auto w-14 h-14 rounded-2xl bg-gradient-to-br from-cyber-gold/15 to-cyber-red/15 border border-cyber-gold/30 flex items-center justify-center shadow-[0_0_25px_rgba(255,215,0,0.15)] mb-3">
+                    <!-- Shield Lock SVG -->
+                    <svg class="w-7 h-7 text-cyber-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                </div>
+                <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">
+                    Cinhub4u Verification
+                </h1>
+                <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">
+                    Solve the arithmetic challenge below to access <span class="text-cyber-gold font-medium">Cinhub4u</span>. Two failed attempts will trigger an immediate security lock.
+                </p>
+            </div>
+
+            <!-- Math Challenge Display Box -->
+            <div class="relative rounded-2xl bg-black/90 border border-white/10 p-5 text-center shadow-inner">
+                <span class="block font-mono text-[10px] uppercase tracking-[0.2em] text-gray-500 mb-2">
+                    Compute Sum
+                </span>
+                <div class="flex items-center justify-center gap-3 sm:gap-4 font-mono text-2xl sm:text-3xl font-bold">
+                    <span id="numA" class="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]">--</span>
+                    <span class="text-cyber-red drop-shadow-[0_0_10px_rgba(255,30,66,0.6)]">+</span>
+                    <span id="numB" class="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]">--</span>
+                    <span class="text-cyber-gold">=</span>
+                    <span class="text-cyber-gold animate-pulse">?</span>
+                </div>
+                <!-- Refresh equation subtle button -->
+                <button type="button" id="refreshBtn" title="Generate new equation" class="absolute top-3 right-3 p-2 rounded-full text-gray-500 hover:text-cyber-gold hover:bg-white/5 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Input & Submit Form -->
+            <form id="verifyForm" class="space-y-4" novalidate>
+                <div>
+                    <label for="answerInput" class="sr-only">Enter your answer</label>
+                    <input 
+                        type="number" 
+                        id="answerInput" 
+                        inputmode="numeric"
+                        placeholder="Enter sum..." 
+                        autocomplete="off"
+                        required
+                        class="cyber-input w-full px-5 py-3.5 text-center font-mono text-lg text-white placeholder-gray-600"
+                    >
+                </div>
+
+                <!-- Dynamic Inline Feedback Message -->
+                <div id="feedbackBox" class="hidden rounded-2xl px-4 py-2.5 text-xs font-medium text-center border"></div>
+
+                <!-- Primary Pill Action Button (32px border-radius) -->
+                <button type="submit" id="verifyBtn" class="btn-cyber-primary w-full py-3.5 px-6 text-sm sm:text-base tracking-wide uppercase cursor-pointer">
+                    Verify Access
+                </button>
+            </form>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- STATE 2: LOCKOUT SCREEN (2 FAILED ATTEMPTS)-->
+        <!-- ========================================== -->
+        <section id="lockedView" class="hidden space-y-6 text-center">
+            <div class="mx-auto w-16 h-16 rounded-2xl bg-cyber-red/15 border border-cyber-red/50 flex items-center justify-center shadow-[0_0_30px_rgba(255,30,66,0.35)]">
+                <!-- Lock Alert Icon -->
+                <svg class="w-8 h-8 text-cyber-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+            </div>
+
+            <div class="space-y-2">
+                <h2 class="text-xl sm:text-2xl font-bold text-cyber-red tracking-tight">
+                    Cinhub4u Access Locked
+                </h2>
+                <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">
+                    Maximum verification attempts (2/2) exceeded. Your browser session has been permanently restricted from accessing Cinhub4u.
+                </p>
+            </div>
+
+            <div class="rounded-2xl bg-cyber-red/5 border border-cyber-red/25 p-4 text-xs font-mono text-gray-300 space-y-1">
+                <div class="text-cyber-red font-bold uppercase tracking-wider">Security Protocol 403-LOCK</div>
+                <div class="text-gray-400">Contact an administrator below to request manual clearance.</div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- STATE 3: VERIFIED & COUNTDOWN REDIRECT     -->
+        <!-- ========================================== -->
+        <section id="verifiedView" class="hidden space-y-6 text-center">
+            <div class="mx-auto w-16 h-16 rounded-2xl bg-cyber-gold/15 border border-cyber-gold/50 flex items-center justify-center shadow-[0_0_30px_rgba(255,215,0,0.35)]">
+                <!-- Checkmark Icon -->
+                <svg class="w-8 h-8 text-cyber-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M5 13l4 4L19 7"/>
+                </svg>
+            </div>
+
+            <div class="space-y-2">
+                <h2 class="text-xl sm:text-2xl font-bold text-cyber-gold tracking-tight">
+                    Identity Verified
+                </h2>
+                <p class="text-xs sm:text-sm text-gray-300">
+                    Security clearance granted. Redirecting you to <span class="text-cyber-gold font-semibold">Cinhub4u</span> shortly...
+                </p>
+            </div>
+
+            <!-- Countdown Circle / Display -->
+            <div class="rounded-2xl bg-black border border-cyber-gold/30 p-5 space-y-3">
+                <div class="font-mono text-xs uppercase tracking-widest text-gray-400">
+                    Redirecting in
+                </div>
+                <div id="countdownTimer" class="font-mono text-4xl font-bold text-cyber-gold drop-shadow-[0_0_12px_rgba(255,215,0,0.5)]">
+                    5s
+                </div>
+                <!-- Progress Bar -->
+                <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                    <div id="redirectProgress" class="h-full bg-gradient-to-r from-cyber-gold to-cyber-red transition-all duration-1000 ease-linear" style="width: 100%;"></div>
+                </div>
+            </div>
+
+            <!-- Manual Instant Redirect Pill Button -->
+            <a id="manualRedirectBtn" href="#destination-unlocked" class="btn-cyber-primary inline-flex items-center justify-center w-full py-3.5 px-6 text-sm uppercase tracking-wider">
+                Continue Now &rarr;
+            </a>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SUPPORT & UNLOCKING FOOTER (ALWAYS VISIBLE)-->
+        <!-- ========================================== -->
+        <footer class="mt-7 pt-5 border-t border-white/10">
+            <p class="text-[11px] font-mono uppercase tracking-wider text-center text-gray-500 mb-3.5">
+                Cinhub4u Support &amp; Manual Unlocking
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <!-- Telegram Pill Button (32px border-radius) -->
+                <a 
+                    href="https://t.me/Kishanms" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    class="btn-cyber-pill btn-cyber-pill-gold flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-medium text-gray-200"
+                >
+                    <!-- Telegram Paper Plane SVG -->
+                    <svg class="w-4 h-4 text-cyber-gold shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                    </svg>
+                    <span>@Kishanms</span>
+                </a>
+
+                <!-- Instagram Pill Button (32px border-radius) -->
+                <a 
+                    href="https://instagram.com/myself._nothing" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    class="btn-cyber-pill btn-cyber-pill-red flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-medium text-gray-200"
+                >
+                    <!-- Instagram Camera SVG -->
+                    <svg class="w-4 h-4 text-cyber-red shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                    </svg>
+                    <span>@myself._nothing</span>
+                </a>
+            </div>
+        </footer>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- SECURITY VERIFICATION LOGIC (SELF-CONTAINED) -->
+    <!-- ========================================== -->
+    <script>
+        (function () {
+            /**
+             * EASY CONFIGURATION BLOCK
+             * Customize your redirect destination, countdown duration, and storage keys here.
+             */
+            const SECURITY_CONFIG = {
+                maxAttempts: 2,
+                redirectUrl: "https://example.com", // Replace with your Cinhub4u target URL
+                redirectDelaySeconds: 5,
+                storageKeys: {
+                    attempts: "cinhub4u_sec_failed_attempts_v1",
+                    locked: "cinhub4u_sec_is_locked_v1"
+                }
+            };
+
+            // DOM Elements
+            const securityCard = document.getElementById("securityCard");
+            const statusDot = document.getElementById("statusDot");
+            const statusBadge = document.getElementById("statusBadge");
+            const attemptsLeftText = document.getElementById("attemptsLeftText");
+            const attemptPill = document.getElementById("attemptPill");
+
+            // Views
+            const challengeView = document.getElementById("challengeView");
+            const lockedView = document.getElementById("l
