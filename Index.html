@@ -1,0 +1,404 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinhub4u — Full-Viewport Security &amp; Download Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        cyber: {
+                            black: '#000000',
+                            card: '#08080a',
+                            gold: '#FFD700',
+                            red: '#FF1E42',
+                        }
+                    },
+                    borderRadius: {
+                        'pill': '32px',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .ambient-glow {
+            background: radial-gradient(circle at 20% 0%, rgba(255, 215, 0, 0.08) 0%, rgba(255, 30, 66, 0.06) 45%, rgba(0, 0, 0, 0) 75%);
+        }
+
+        .scanline {
+            background: linear-gradient(to bottom, transparent 50%, rgba(255, 215, 0, 0.02) 51%);
+            background-size: 100% 4px;
+        }
+
+        .cyber-panel {
+            background: linear-gradient(180deg, rgba(16, 16, 20, 0.94) 0%, rgba(6, 6, 8, 0.99) 100%);
+            border: 1px solid rgba(255, 215, 0, 0.22);
+            box-shadow: 
+                0 0 40px -10px rgba(255, 30, 66, 0.22),
+                0 0 25px -8px rgba(255, 215, 0, 0.18),
+                inset 0 1px 0 0 rgba(255, 215, 0, 0.22);
+        }
+
+        .cyber-input {
+            background: #030304;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .cyber-input:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 16px rgba(255, 215, 0, 0.2);
+        }
+
+        .btn-cyber-primary {
+            border-radius: 32px;
+            background: linear-gradient(135deg, #FFD700 0%, #ff9d00 50%, #FF1E42 100%);
+            color: #000000;
+            font-weight: 700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3), 0 0 12px rgba(255, 30, 66, 0.25);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-cyber-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 0 28px rgba(255, 215, 0, 0.55), 0 0 18px rgba(255, 30, 66, 0.45);
+        }
+
+        .btn-cyber-pill {
+            border-radius: 32px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s ease;
+        }
+
+        .btn-cyber-pill:hover {
+            border-color: #FFD700;
+            color: #FFD700;
+            background: rgba(255, 215, 0, 0.08);
+        }
+
+        textarea::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background: #050507;
+            border-radius: 8px;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background: rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+        }
+        textarea::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 215, 0, 0.6);
+        }
+    </style>
+</head>
+<body class="min-h-screen w-full p-4 sm:p-6 lg:p-8 relative selection:bg-cyber-gold selection:text-black">
+
+    <!-- Ambient Glow & Scanlines -->
+    <div class="fixed inset-0 ambient-glow pointer-events-none"></div>
+    <div class="fixed inset-0 scanline pointer-events-none opacity-60"></div>
+
+    <!-- Top Brand Header -->
+    <header class="relative z-10 max-w-7xl mx-auto mb-6 sm:mb-8 flex flex-col sm:flex-row items-center justify-between gap-4 pb-5 border-b border-white/10">
+        <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-cyber-gold/20 to-cyber-red/20 border border-cyber-gold/40 flex items-center justify-center shadow-[0_0_20px_rgba(255,215,0,0.2)]">
+                <svg class="w-6 h-6 text-cyber-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                </svg>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-white">
+                        Cinhub4u <span class="text-cyber-gold">HTML Generator</span>
+                    </h1>
+                    <span class="px-2.5 py-0.5 rounded-pill bg-cyber-red/15 border border-cyber-red/40 font-mono text-[10px] uppercase tracking-wider text-cyber-red font-bold">
+                        v2.1 Full-Viewport
+                    </span>
+                </div>
+                <p class="text-xs text-gray-400">
+                    Creates 100% full-screen opaque pitch-black (#000000) widgets with zero parent theme/background leakage
+                </p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2.5">
+            <a href="https://t.me/Kishanms" target="_blank" rel="noopener noreferrer" class="btn-cyber-pill px-4 py-2 text-xs font-medium text-gray-300 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-cyber-gold"></span>
+                <span>TG: @Kishanms</span>
+            </a>
+            <a href="https://instagram.com/myself._nothing" target="_blank" rel="noopener noreferrer" class="btn-cyber-pill px-4 py-2 text-xs font-medium text-gray-300 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-cyber-red"></span>
+                <span>IG: @myself._nothing</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Two-Column Workspace -->
+    <main class="relative z-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+
+        <!-- ========================================================= -->
+        <!-- LEFT COLUMN (7 COLS): ADMIN CONFIGURATION & CODE OUTPUT   -->
+        <!-- ========================================================= -->
+        <section class="lg:col-span-7 space-y-6">
+            
+            <!-- Step 1: Movie & File Details Card -->
+            <div class="cyber-panel rounded-3xl p-5 sm:p-7 space-y-5">
+                <div class="flex items-center justify-between border-b border-white/10 pb-3.5">
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-cyber-gold text-black font-mono text-xs font-bold flex items-center justify-center">1</span>
+                        <h2 class="text-base sm:text-lg font-bold text-white">Movie &amp; File Information</h2>
+                    </div>
+                    <span class="font-mono text-[11px] text-gray-500 uppercase">Required</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Movie Title Input -->
+                    <div class="sm:col-span-2">
+                        <label for="movieTitleInput" class="block text-xs font-mono uppercase tracking-wider text-gray-400 mb-1.5">
+                            Movie / Series Title
+                        </label>
+                        <input 
+                            type="text" 
+                            id="movieTitleInput" 
+                            value="Kantara: Chapter 1 (2025) Kannada"
+                            placeholder="e.g., Kantara: Chapter 1 (2025) Kannada"
+                            class="cyber-input w-full px-4 py-3 text-sm text-white placeholder-gray-600"
+                        >
+                    </div>
+
+                    <!-- Format / Quality Type Input -->
+                    <div>
+                        <label for="fileTypeInput" class="block text-xs font-mono uppercase tracking-wider text-gray-400 mb-1.5">
+                            Quality / Format Type
+                        </label>
+                        <input 
+                            type="text" 
+                            id="fileTypeInput" 
+                            value="1080p HQ HDRip • x264 AAC"
+                            placeholder="e.g., 1080p WEB-DL • Dual Audio"
+                            class="cyber-input w-full px-4 py-3 text-sm text-white placeholder-gray-600"
+                        >
+                    </div>
+
+                    <!-- File Size Input -->
+                    <div>
+                        <label for="fileSizeInput" class="block text-xs font-mono uppercase tracking-wider text-gray-400 mb-1.5">
+                            Total File Size
+                        </label>
+                        <input 
+                            type="text" 
+                            id="fileSizeInput" 
+                            value="2.45 GB"
+                            placeholder="e.g., 2.45 GB"
+                            class="cyber-input w-full px-4 py-3 text-sm text-white placeholder-gray-600"
+                        >
+                    </div>
+                </div>
+
+                <!-- Security Gate Settings Row -->
+                <div class="pt-2 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <label class="inline-flex items-center gap-3 cursor-pointer select-none">
+                        <input type="checkbox" id="enableSecurityToggle" checked class="w-4 h-4 accent-[#FFD700] rounded cursor-pointer">
+                        <div>
+                            <span class="block text-sm font-semibold text-white">Enable 2-Attempt Security Verification</span>
+                            <span class="block text-xs text-gray-400">Hides download servers until user solves math captcha</span>
+                        </div>
+                    </label>
+
+                    <div class="flex items-center gap-2 shrink-0">
+                        <label for="unlockDelayInput" class="text-xs font-mono text-gray-400">Unlock Delay:</label>
+                        <input 
+                            type="number" 
+                            id="unlockDelayInput" 
+                            value="3" 
+                            min="0" 
+                            max="30"
+                            class="cyber-input w-16 px-2.5 py-1.5 text-center font-mono text-xs text-cyber-gold"
+                        >
+                        <span class="text-xs font-mono text-gray-500">sec</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Download Servers & Buttons Manager -->
+            <div class="cyber-panel rounded-3xl p-5 sm:p-7 space-y-5">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3.5">
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-cyber-red text-white font-mono text-xs font-bold flex items-center justify-center">2</span>
+                        <h2 class="text-base sm:text-lg font-bold text-white">Download Servers &amp; Button Names</h2>
+                    </div>
+                    <button 
+                        type="button" 
+                        id="addServerBtn"
+                        class="btn-cyber-pill px-4 py-2 text-xs font-bold text-cyber-gold border-cyber-gold/40 hover:bg-cyber-gold/15 flex items-center gap-1.5 cursor-pointer"
+                    >
+                        <span>+ Add Download Server</span>
+                    </button>
+                </div>
+
+                <p class="text-xs text-gray-400">
+                    Add as many download server buttons as you want. Customize each <span class="text-white font-medium">Button Name</span>, <span class="text-white font-medium">Size/Quality Tag</span>, <span class="text-white font-medium">Download URL</span>, and <span class="text-white font-medium">Glow Style</span>.
+                </p>
+
+                <!-- Dynamic Server Rows Container -->
+                <div id="serverListContainer" class="space-y-3.5">
+                    <!-- Rows injected via JavaScript -->
+                </div>
+            </div>
+
+            <!-- Step 3: Generated HTML Output Box -->
+            <div class="cyber-panel rounded-3xl p-5 sm:p-7 space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3.5">
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-gradient-to-r from-cyber-gold to-cyber-red text-black font-mono text-xs font-bold flex items-center justify-center">3</span>
+                        <h2 class="text-base sm:text-lg font-bold text-white">Generated Full-Viewport HTML Code</h2>
+                    </div>
+                    <div class="flex items-center gap-2.5">
+                        <button 
+                            type="button" 
+                            id="copyHtmlBtn"
+                            class="btn-cyber-primary px-5 py-2.5 text-xs uppercase tracking-wider flex items-center gap-2 cursor-pointer"
+                        >
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+                            </svg>
+                            <span id="copyBtnText">Copy HTML Code</span>
+                        </button>
+                    </div>
+                </div>
+
+                <p class="text-xs text-gray-400">
+                    Paste this snippet anywhere in your <span class="text-cyber-gold">Blogger template</span> or WordPress site. It launches as a 100% full-screen opaque pitch-black overlay.
+                </p>
+
+                <div class="relative">
+                    <textarea 
+                        id="generatedCodeOutput" 
+                        readonly 
+                        rows="10"
+                        class="w-full rounded-2xl bg-[#030305] border border-white/15 p-4 font-mono text-xs text-gray-300 focus:outline-none focus:border-cyber-gold leading-relaxed"
+                    ></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- RIGHT COLUMN (5 COLS): LIVE INTERACTIVE WIDGET PREVIEW    -->
+        <!-- ========================================================= -->
+        <aside class="lg:col-span-5 lg:sticky lg:top-6 space-y-4">
+            <!-- Preview Controls Header -->
+            <div class="flex flex-wrap items-center justify-between gap-2 px-1">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-cyber-gold animate-pulse"></span>
+                    <span class="font-mono text-xs uppercase tracking-widest text-gray-300 font-bold">
+                        Live Widget Preview
+                    </span>
+                </div>
+
+                <!-- Quick State Switcher Pills for Testing -->
+                <div class="flex items-center gap-1.5 bg-white/5 p-1 rounded-pill border border-white/10">
+                    <button type="button" id="previewLockedModeBtn" class="px-3 py-1 rounded-pill text-[11px] font-mono font-bold bg-cyber-gold text-black transition-all cursor-pointer">
+                        Security Gate
+                    </button>
+                    <button type="button" id="previewUnlockedModeBtn" class="px-3 py-1 rounded-pill text-[11px] font-mono font-bold text-gray-400 hover:text-white transition-all cursor-pointer">
+                        Download Links
+                    </button>
+                </div>
+            </div>
+
+            <!-- Live Render Container -->
+            <div id="livePreviewMount" class="w-full">
+                <!-- Live generated Cinhub4u card renders here -->
+            </div>
+
+            <p class="text-center text-[11px] font-mono text-gray-500">
+                Tip: Use the toggle above to inspect both the Security Challenge and the Unlocked Download Buttons.
+            </p>
+        </aside>
+
+    </main>
+
+    <!-- ========================================================= -->
+    <!-- GENERATOR & LIVE PREVIEW ENGINE                           -->
+    <!-- ========================================================= -->
+    <script>
+        (function () {
+            let servers = [
+                {
+                    id: crypto.randomUUID ? crypto.randomUUID() : "srv_1",
+                    buttonName: "G-Drive Direct Server 1",
+                    tag: "1080p • 2.45 GB",
+                    url: "https://example.com/download-gdrive-1080p",
+                    style: "gold"
+                },
+                {
+                    id: crypto.randomUUID ? crypto.randomUUID() : "srv_2",
+                    buttonName: "Fast Cloud Mirror 2",
+                    tag: "720p • 1.15 GB",
+                    url: "https://example.com/download-mirror-720p",
+                    style: "red"
+                },
+                {
+                    id: crypto.randomUUID ? crypto.randomUUID() : "srv_3",
+                    buttonName: "Telegram Instant File",
+                    tag: "480p • 540 MB",
+                    url: "https://t.me/Kishanms",
+                    style: "dark"
+                }
+            ];
+
+            let previewForceUnlocked = false;
+            let previewExpectedSum = 0;
+            let previewFailedAttempts = 0;
+
+            const movieTitleInput = document.getElementById("movieTitleInput");
+            const fileTypeInput = document.getElementById("fileTypeInput");
+            const fileSizeInput = document.getElementById("fileSizeInput");
+            const enableSecurityToggle = document.getElementById("enableSecurityToggle");
+            const unlockDelayInput = document.getElementById("unlockDelayInput");
+            const serverListContainer = document.getElementById("serverListContainer");
+            const addServerBtn = document.getElementById("addServerBtn");
+            const generatedCodeOutput = document.getElementById("generatedCodeOutput");
+            const copyHtmlBtn = document.getElementById("copyHtmlBtn");
+            const copyBtnText = document.getElementById("copyBtnText");
+            const livePreviewMount = document.getElementById("livePreviewMount");
+            const previewLockedModeBtn = document.getElementById("previewLockedModeBtn");
+            const previewUnlockedModeBtn = document.getElementById("previewUnlockedModeBtn");
+
+            function escapeHtml(str) {
+                return String(str || "")
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+            function renderServerEditorList() {
+                serverListContainer.innerHTML = "";
+
+                servers.forEach((srv, index) => {
+                    const row = document.createElement("div");
+                    row.className = "rounded-2xl bg-black/80 border border-white/10 p-4 space-y-3 relative group hover:border-cyber-gold/
